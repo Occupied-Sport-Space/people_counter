@@ -59,16 +59,9 @@ if __name__ == "__main__":
     while True:
         success, img = cap.read()
         result, objectInfo = getObjects(img,0.6,0.2,objects=['person'])
-        if timer % 120 == 0:
+        if timer % 60 == 0:
             pb.collection('sportSpaces').update(sys.argv[3], {
-                    "name": spaceRecord.name,
-                    "logo": spaceRecord.logo,
-                    "link": spaceRecord.link,
-                    "coords": spaceRecord.coords,
-                    "price": spaceRecord.price,
-                    "availability": len(objectInfo),
-                    "address": spaceRecord.address,
-                    "markerLogo": spaceRecord.marker_logo,		
+                    "availability": len(objectInfo),		
             })
         cv2.imshow("Output",img)
         key = cv2.waitKey(1) & 0xFF
