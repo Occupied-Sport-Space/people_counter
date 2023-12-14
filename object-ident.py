@@ -1,7 +1,7 @@
-import cv2
 import sys
-import time
 import logging
+import cv2
+import socketio
 from pocketbase import PocketBase
 
 #thres = 0.45 # Threshold to detect object
@@ -51,18 +51,23 @@ if __name__ == "__main__":
     timer = 0
 
 	# pb controller
-    pb = PocketBase("https://oss-be-pb.fly.dev/")
-    pb.collection('users').auth_with_password(sys.argv[1], sys.argv[2])
-    spaceRecord = pb.collection('sportSpaces').get_one(sys.argv[3])
-    logger.info("Starting the live stream at {}".format(spaceRecord.name))
+    # pb = PocketBase("https://oss-be-pb.fly.dev/")
+    # pb.collection('users').auth_with_password(sys.argv[1], sys.argv[2])
+    # spaceRecord = pb.collection('sportSpaces').get_one(sys.argv[3])
+    # logger.info("Starting the live stream at {}".format(spaceRecord.name))
+
+    # socket.io instance
+    sio = socketio.SimpleClient()
+    sio.connect('http://localhost:8000')
 
     while True:
         success, img = cap.read()
         result, objectInfo = getObjects(img,0.6,0.2,objects=['person'])
-        if timer % 60 == 0:
-            pb.collection('sportSpaces').update(sys.argv[3], {
-                    "availability": len(objectInfo),		
-            })
+        # if timer % 60 == 0:
+        #     pb.collection('sportSpaces').update(sys.argv[3], {
+        #             "availability": len(objectInfo),		
+        #     })
+        sio.emit('count', len(objectInfo), sys.argv[3], 1)
         cv2.imshow("Output",img)
         key = cv2.waitKey(1) & 0xFF
         timer += 1
