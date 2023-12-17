@@ -2,7 +2,6 @@ import sys
 import logging
 import cv2
 import socketio
-from pocketbase import PocketBase
 
 #thres = 0.45 # Threshold to detect object
 
@@ -50,12 +49,6 @@ if __name__ == "__main__":
     cap.set(4,480)
     timer = 0
 
-	# pb controller
-    # pb = PocketBase("https://oss-be-pb.fly.dev/")
-    # pb.collection('users').auth_with_password(sys.argv[1], sys.argv[2])
-    # spaceRecord = pb.collection('sportSpaces').get_one(sys.argv[3])
-    # logger.info("Starting the live stream at {}".format(spaceRecord.name))
-
     # socket.io instance
     sio = socketio.SimpleClient()
     sio.connect('http://localhost:8000')
@@ -63,10 +56,6 @@ if __name__ == "__main__":
     while True:
         success, img = cap.read()
         result, objectInfo = getObjects(img,0.6,0.2,objects=['person'])
-        # if timer % 60 == 0:
-        #     pb.collection('sportSpaces').update(sys.argv[3], {
-        #             "availability": len(objectInfo),		
-        #     })
         sio.emit('count', {"count": len(objectInfo), "spaceId": sys.argv[3], "cameraId": 1})
         cv2.imshow("Output",img)
         key = cv2.waitKey(1) & 0xFF
