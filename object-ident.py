@@ -67,7 +67,7 @@ if __name__ == "__main__":
         #     pb.collection('sportSpaces').update(sys.argv[3], {
         #             "availability": len(objectInfo),		
         #     })
-        sio.emit('count', len(objectInfo), sys.argv[3], 1)
+        sio.emit('count', {"count": len(objectInfo), "spaceId": sys.argv[3], "cameraId": 1})
         cv2.imshow("Output",img)
         key = cv2.waitKey(1) & 0xFF
         timer += 1
