@@ -4,6 +4,7 @@ import cv2
 import socketio
 
 #thres = 0.45 # Threshold to detect object
+cameraId = 0 # Change for every camera setup!
 
 logging.basicConfig(level = logging.INFO, format = "[INFO] %(message)s")
 logger = logging.getLogger(__name__)
@@ -56,7 +57,7 @@ if __name__ == "__main__":
     while True:
         success, img = cap.read()
         result, objectInfo = getObjects(img,0.6,0.2,objects=['person'])
-        sio.emit('count', {"count": len(objectInfo), "spaceId": sys.argv[3], "cameraId": 1})
+        sio.emit('count', {"count": len(objectInfo), "spaceId": sys.argv[3], "cameraId": cameraId})
         cv2.imshow("Output",img)
         key = cv2.waitKey(1) & 0xFF
         timer += 1
