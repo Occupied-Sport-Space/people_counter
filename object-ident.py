@@ -69,10 +69,8 @@ if __name__ == "__main__":
             img = picam2.capture_array()
             img = cv2.flip(img, -1)
         result, objectInfo = getObjects(img,0.6,0.2,objects=['person'])
-
         if oldCount != len(objectInfo):
             sio.emit('count', {"count": len(objectInfo), "spaceId": sys.argv[3], "cameraId": cameraId})
-
         cv2.imshow("Output",img)
         key = cv2.waitKey(1) & 0xFF
         oldCount = len(objectInfo)
