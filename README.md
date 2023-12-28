@@ -23,7 +23,7 @@ Follow these steps to get started with the Camera Software:
 1. **Installation:** Clone this repository to your local machine.
 
    ```bash
-   git clone https://github.com/your/repository.git
+   git clone https://github.com/Occupied-Sport-Space/people_counter
    ```
 
 2. **Dependencies:** Install the necessary Python dependencies.
