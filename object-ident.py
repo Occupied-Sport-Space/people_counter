@@ -1,5 +1,7 @@
 import sys
 import logging
+import os
+from dotenv import load_dotenv
 # from picamera2 import Picamera2
 import cv2
 import socketio
@@ -7,6 +9,7 @@ import socketio
 #thres = 0.45 # Threshold to detect object
 cameraId = 0 # Change for every camera setup!
 
+load_dotenv()
 logging.basicConfig(level = logging.INFO, format = "[INFO] %(message)s")
 logger = logging.getLogger(__name__)
 
@@ -24,7 +27,7 @@ net.setInputScale(1.0/ 127.5)
 net.setInputMean((127.5, 127.5, 127.5))
 net.setInputSwapRB(True)
 
-if sys.argv[4] != 'T':
+if sys.argv[2] != 'T':
     picam2=Picamera2()
     picam2.preview_configuration.main.size=(1280, 720)
     picam2.preview_configuration.main.format='RGB888'
@@ -63,14 +66,14 @@ if __name__ == "__main__":
     sio.connect('https://oss-be.up.railway.app')
 
     while True:
-        if (sys.argv[4] == 'T'):
+        if (sys.argv[2] == 'T'):
             success, img = cap.read()
         else:
             img = picam2.capture_array()
             img = cv2.flip(img, -1)
         result, objectInfo = getObjects(img,0.6,0.2,objects=['person'])
         if oldCount != len(objectInfo):
-            sio.emit('count', {"count": len(objectInfo), "spaceId": sys.argv[3], "cameraId": cameraId})
+            sio.emit('count', {"count": len(objectInfo), "spaceId": sys.argv[1], "cameraId": cameraId, "authToken": os.getenv("AUTH_TOKEN")})
         cv2.imshow("Output",img)
         key = cv2.waitKey(1) & 0xFF
         oldCount = len(objectInfo)
