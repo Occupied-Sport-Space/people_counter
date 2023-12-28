@@ -73,7 +73,7 @@ if __name__ == "__main__":
             img = cv2.flip(img, -1)
         result, objectInfo = getObjects(img,0.6,0.2,objects=['person'])
         if oldCount != len(objectInfo):
-            sio.emit('count', {"count": len(objectInfo), "spaceId": sys.argv[1], "cameraId": cameraId, "authToken": os.getenv("AUTH_TOKEN")})
+            sio.emit('count', {"count": len(objectInfo), "spaceId": os.getenv("SPACE_ID"), "cameraId": cameraId, "authToken": os.getenv("AUTH_TOKEN")})
         cv2.imshow("Output",img)
         key = cv2.waitKey(1) & 0xFF
         oldCount = len(objectInfo)
