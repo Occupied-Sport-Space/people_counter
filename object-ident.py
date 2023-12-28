@@ -1,9 +1,11 @@
 import sys
 import logging
+# from picamera2 import Picamera2
 import cv2
-from pocketbase import PocketBase
+import socketio
 
 #thres = 0.45 # Threshold to detect object
+cameraId = 0 # Change for every camera setup!
 
 logging.basicConfig(level = logging.INFO, format = "[INFO] %(message)s")
 logger = logging.getLogger(__name__)
@@ -22,6 +24,13 @@ net.setInputScale(1.0/ 127.5)
 net.setInputMean((127.5, 127.5, 127.5))
 net.setInputSwapRB(True)
 
+if sys.argv[4] != 'T':
+    picam2=Picamera2()
+    picam2.preview_configuration.main.size=(1280, 720)
+    picam2.preview_configuration.main.format='RGB888'
+    picam2.preview_configuration.align()
+    picam2.configure("preview")
+    picam2.start()
 
 def getObjects(img, thres, nms, draw=True, objects=[]):
     classIds, confs, bbox = net.detect(img,confThreshold=thres,nmsThreshold=nms)
@@ -43,27 +52,28 @@ def getObjects(img, thres, nms, draw=True, objects=[]):
 
 
 if __name__ == "__main__":
-
     cap = cv2.VideoCapture(0)
     cap.set(3,1920)
     cap.set(4,480)
     timer = 0
+    oldCount = 0
 
-	# pb controller
-    pb = PocketBase("https://oss-be-pb.fly.dev/")
-    pb.collection('users').auth_with_password(sys.argv[1], sys.argv[2])
-    spaceRecord = pb.collection('sportSpaces').get_one(sys.argv[3])
-    logger.info("Starting the live stream at {}".format(spaceRecord.name))
+    # socket.io instance
+    sio = socketio.SimpleClient()
+    sio.connect('https://oss-be.up.railway.app')
 
     while True:
-        success, img = cap.read()
+        if (sys.argv[4] == 'T'):
+            success, img = cap.read()
+        else:
+            img = picam2.capture_array()
+            img = cv2.flip(img, -1)
         result, objectInfo = getObjects(img,0.6,0.2,objects=['person'])
-        if timer % 60 == 0:
-            pb.collection('sportSpaces').update(sys.argv[3], {
-                    "availability": len(objectInfo),		
-            })
+        if oldCount != len(objectInfo):
+            sio.emit('count', {"count": len(objectInfo), "spaceId": sys.argv[3], "cameraId": cameraId})
         cv2.imshow("Output",img)
         key = cv2.waitKey(1) & 0xFF
+        oldCount = len(objectInfo)
         timer += 1
 		# if the `q` key was pressed, break from the loop
         if key == ord("q"):
