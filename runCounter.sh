@@ -1,1 +1,1 @@
-python3 object-ident.py ${1} ${2} a2125193-d152-4f96-a1c9-b6a76fd72a01 ${3}
+python3 object-ident.py ${1} ${2} 5b52794c-f45a-4f41-9d49-de6ca23be09f ${3}

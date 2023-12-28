@@ -60,7 +60,7 @@ if __name__ == "__main__":
 
     # socket.io instance
     sio = socketio.SimpleClient()
-    sio.connect('http://localhost:8000')
+    sio.connect('https://oss-be.up.railway.app')
 
     while True:
         if (sys.argv[4] == 'T'):
