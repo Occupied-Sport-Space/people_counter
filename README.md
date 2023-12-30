@@ -47,11 +47,18 @@ Follow these steps to get started with the Camera Software:
    SPACE_ID=your_space_id_here
    ```
 
-6. **Run the Software:** Execute the `runCounter.sh` script with the first argument (`F` for Raspberry Pi camera, `T` for other cameras).
+6. **Camera used**: Update the `.env` file with a variable called `USB_WEBCAM`, that's either `F` or `T`. It's meant for people using rapsberry pi camera modules or something of the sort.
+
+   ```dotenv
+   AUTH_TOKEN=your_auth_token_here
+   SPACE_ID=your_space_id_here
+   USB_WEBCAM=(`F` or `T`)
+   ```
+
+7. **Run the Software:** Execute the `object-ident.py` script using python as shown
 
    ```bash
-   ./runCounter.sh F  # for Raspberry Pi camera
-   ./runCounter.sh T  # for other cameras
+   python object-ident.py
    ```
 
 ## Usage

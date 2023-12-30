@@ -27,7 +27,7 @@ net.setInputScale(1.0/ 127.5)
 net.setInputMean((127.5, 127.5, 127.5))
 net.setInputSwapRB(True)
 
-if sys.argv[2] != 'T':
+if os.getenv('USB_WEBCAM') != 'T':
     picam2=Picamera2()
     picam2.preview_configuration.main.size=(1280, 720)
     picam2.preview_configuration.main.format='RGB888'
@@ -66,7 +66,7 @@ if __name__ == "__main__":
     sio.connect('https://oss-be.up.railway.app')
 
     while True:
-        if (sys.argv[2] == 'T'):
+        if (os.getenv('USB_WEBCAM') == 'T'):
             success, img = cap.read()
         else:
             img = picam2.capture_array()
